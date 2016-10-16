@@ -20,7 +20,7 @@ import java.util.*;
 
 public class RotationalData implements Runnable {
 
-    private static final int POINTS_TO_SHOW = 10;
+    private static final int POINTS_TO_SHOW = 1000;
     private static int timeInterval;
     private static final int AXIS = 0;
     private ArrayList<float[]> data;

@@ -59,7 +59,7 @@ public class DynamicXYPlotActivity extends Activity {
         SensorManager manager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
         Sensor gyroscope = manager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
-        int interval = 2000000;
+        int interval = 20000;
         data = new RotationalData(interval);
         manager.registerListener(new RotationalSensorListener(data), gyroscope, interval);
 

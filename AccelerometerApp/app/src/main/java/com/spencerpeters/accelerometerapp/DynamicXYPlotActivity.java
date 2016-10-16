@@ -20,6 +20,8 @@ package com.spencerpeters.accelerometerapp;
         import android.graphics.Color;
         import android.graphics.DashPathEffect;
         import android.graphics.Paint;
+        import android.hardware.Sensor;
+        import android.hardware.SensorManager;
         import android.os.Bundle;
         import com.androidplot.Plot;
         import com.androidplot.util.PixelUtils;
@@ -48,7 +50,7 @@ public class DynamicXYPlotActivity extends Activity {
 
     private XYPlot dynamicPlot;
     private MyPlotUpdater plotUpdater;
-    SampleDynamicXYDatasource data;
+    RotationalData data;
     private Thread myThread;
 
     @Override
@@ -56,10 +58,20 @@ public class DynamicXYPlotActivity extends Activity {
 
         // android boilerplate stuff
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dynamic_xyplot_example);
+        setContentView(R.layout.sensor_data_plot);
+
+        // pasted in
+        SensorManager manager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
+        Sensor gyroscope = manager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+
+        int freq = 2000000;
+        data = new RotationalData("data", freq);
+        manager.registerListener(new RotationalSensorListener(data), gyroscope, freq);
+
+        // end pasted in
 
         // get handles to our View defined in layout.xml:
-        dynamicPlot = (XYPlot) findViewById(R.id.dynamicXYPlot);
+        dynamicPlot = (XYPlot) findViewById(R.id.plot);
 
         plotUpdater = new MyPlotUpdater(dynamicPlot);
 
@@ -68,17 +80,15 @@ public class DynamicXYPlotActivity extends Activity {
                 setFormat(new DecimalFormat("0"));
 
         // getInstance and position datasets:
-        data = new SampleDynamicXYDatasource();
-        SampleDynamicSeries sine1Series = new SampleDynamicSeries(data, 0, "Sine 1");
-        SampleDynamicSeries sine2Series = new SampleDynamicSeries(data, 1, "Sine 2");
 
         LineAndPointFormatter formatter1 = new LineAndPointFormatter(
                 Color.rgb(0, 200, 0), null, null, null);
         formatter1.getLinePaint().setStrokeJoin(Paint.Join.ROUND);
         formatter1.getLinePaint().setStrokeWidth(10);
-        dynamicPlot.addSeries(sine1Series,
+        dynamicPlot.addSeries(data,
                 formatter1);
 
+        /*
         LineAndPointFormatter formatter2 =
                 new LineAndPointFormatter(Color.rgb(0, 0, 200), null, null, null);
         formatter2.getLinePaint().setStrokeWidth(10);
@@ -86,6 +96,7 @@ public class DynamicXYPlotActivity extends Activity {
 
         //formatter2.getFillPaint().setAlpha(220);
         dynamicPlot.addSeries(sine2Series, formatter2);
+        */
 
         // hook up the plotUpdater to the data model:
         data.addObserver(plotUpdater);
@@ -124,7 +135,7 @@ public class DynamicXYPlotActivity extends Activity {
         super.onPause();
     }
 
-    class SampleDynamicXYDatasource implements Runnable {
+  /*  class SampleDynamicXYDatasource implements Runnable {
 
         // encapsulates management of the observers watching this datasource for update events:
         class MyObservable extends Observable {
@@ -218,15 +229,14 @@ public class DynamicXYPlotActivity extends Activity {
         }
 
     }
-
+*/ /*
     class SampleDynamicSeries implements XYSeries {
-        private SampleDynamicXYDatasource datasource;
+        private RotationalData datasource;
         private int seriesIndex;
         private String title;
 
-        public SampleDynamicSeries(SampleDynamicXYDatasource datasource, int seriesIndex, String title) {
+        public SampleDynamicSeries(RotationalData datasource, String title) {
             this.datasource = datasource;
-            this.seriesIndex = seriesIndex;
             this.title = title;
         }
 
@@ -237,17 +247,18 @@ public class DynamicXYPlotActivity extends Activity {
 
         @Override
         public int size() {
-            return datasource.getItemCount(seriesIndex);
+            return datasource.size();
         }
 
         @Override
         public Number getX(int index) {
-            return datasource.getX(seriesIndex, index);
+            return datasource.getX(index);
         }
 
         @Override
         public Number getY(int index) {
-            return datasource.getY(seriesIndex, index);
+            return datasource.getY(index);
         }
     }
+    */
 }

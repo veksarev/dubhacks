@@ -16,6 +16,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".SimpleXYPlotActivity"></activity>
+        <activity android:name=".DynamicXYPlotActivity"></activity>
     </application>
 
 </manifest>

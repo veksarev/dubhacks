@@ -2,12 +2,25 @@ package com.spencerpeters.accelerometerapp;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import android.app.Activity;
+import android.graphics.*;
+import android.os.Bundle;
+
+import com.androidplot.util.PixelUtils;
+import com.androidplot.xy.SimpleXYSeries;
+import com.androidplot.xy.XYSeries;
+import com.androidplot.xy.*;
+
+import java.text.FieldPosition;
+import java.text.Format;
+import java.text.ParsePosition;
+import java.util.*;
 
 /**
  * Created by Vadim on 10/16/2016.
  */
 
-public class RotationalData implements XYSeries{
+public class RotationalData implements XYSeries implements Ru {
 
     private static int timeInterval;
     private static final int AXIS = 1;
@@ -37,12 +50,12 @@ public class RotationalData implements XYSeries{
     }
 
     @Override
-    public Number getX(int index){
+    public Number getY(int index){
         return data.get(index)[AXIS];
     }
 
     @Override
-    public Number getY(int index){
+    public Number getX(int index){
         return index * timeInterval;
     }
 

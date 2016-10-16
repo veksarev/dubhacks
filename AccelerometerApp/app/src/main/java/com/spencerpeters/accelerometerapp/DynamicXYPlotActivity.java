@@ -3,7 +3,11 @@ package com.spencerpeters.accelerometerapp;
         import android.graphics.Color;
         import android.graphics.DashPathEffect;
         import android.graphics.Paint;
+        import android.hardware.Sensor;
+        import android.hardware.SensorManager;
         import android.os.Bundle;
+        import android.util.Log;
+
         import com.androidplot.Plot;
         import com.androidplot.util.PixelUtils;
         import com.androidplot.xy.XYSeries;
@@ -25,6 +29,7 @@ public class DynamicXYPlotActivity extends Activity {
 
         @Override
         public void update(Observable o, Object arg) {
+            Log.d("refresh", "plot is redrawn");
             plot.redraw();
         }
     }
@@ -39,10 +44,10 @@ public class DynamicXYPlotActivity extends Activity {
 
         // android boilerplate stuff
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dynamic_xyplot_example);
+        setContentView(R.layout.sensor_data_plot);
 
         // get handles to our View defined in layout.xml:
-        dynamicPlot = (XYPlot) findViewById(R.id.dynamicXYPlot);
+        dynamicPlot = (XYPlot) findViewById(R.id.plot);
 
         plotUpdater = new MyPlotUpdater(dynamicPlot);
 
@@ -51,7 +56,14 @@ public class DynamicXYPlotActivity extends Activity {
                 setFormat(new DecimalFormat("0"));
 
         // getInstance and position datasets:
-        data = new RotationalData(200000);
+        SensorManager manager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
+        Sensor gyroscope = manager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+
+        int interval = 2000000;
+        data = new RotationalData(interval);
+        manager.registerListener(new RotationalSensorListener(data), gyroscope, interval);
+
+
         SampleDynamicSeries sine1Series = new SampleDynamicSeries(data, "workout");
 
         LineAndPointFormatter formatter1 = new LineAndPointFormatter(
@@ -76,7 +88,7 @@ public class DynamicXYPlotActivity extends Activity {
                 XYGraphWidget.Edge.LEFT).setFormat(new DecimalFormat("###.#"));
 
         // uncomment this line to freeze the range boundaries:
-        dynamicPlot.setRangeBoundaries(-100, 100, BoundaryMode.FIXED);
+        dynamicPlot.setRangeBoundaries(-3, 3, BoundaryMode.FIXED);
 
         // create a dash effect for domain and range grid lines:
         DashPathEffect dashFx = new DashPathEffect(

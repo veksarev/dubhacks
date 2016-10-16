@@ -11,9 +11,9 @@ import java.util.Queue;
 
 public class RepsCalculator {
     private static final int AXIS = 1;
-    private static final float margin = 1.0f;
-    private static final float restMargin = 1.0f;
-    private static final int bufferSize = 30;
+    private static final float margin = 0.7f;
+    private static final float restMargin = 0.4f;
+    private static final int bufferSize = 10;
 
     public static int numPeaks(ArrayList<float[]> list, int size){
         int peaks = 0;
@@ -21,7 +21,7 @@ public class RepsCalculator {
         float prevMinMax = 0.0f;
         while(i < size){
             float current = list.get(i)[AXIS];
-            if((prevMinMax > margin && current < (0.0 - margin))||(prevMinMax < (0.0 - margin) && current > margin)){
+            if((prevMinMax > margin && current < (0.0 - margin)) || (current > margin && prevMinMax < (0.0 - margin))){
                 peaks++;
                 prevMinMax = current;
             }
@@ -36,27 +36,15 @@ public class RepsCalculator {
             }
             i++;
         }
-        return peaks;
+        return peaks/2;
     }
 
 
     public static int restTime(ArrayList<float[]> list, int size, int freq){
         int pointsResting = 0;
-        LinkedList<Float> buffer = new LinkedList<Float>();
-        for(int i = 0; i < bufferSize; i++) {
-            buffer.add(0.0f);
-        }
-        int i = 0;
-        while(i < size){
-            boolean allZero = true;
-            buffer.pop();
-            buffer.push(list.get(i)[AXIS]);
-            for(float f: buffer){
-                if(!almostZero(f)){
-                    allZero = false;
-                }
-            }
-            if(allZero){
+        int i = bufferSize;
+        while(i < size - bufferSize){
+            if(almostZero(list.get(i - bufferSize)[AXIS]) && almostZero(list.get(i)[AXIS]) && almostZero(list.get(i + bufferSize)[AXIS])){
                 pointsResting++;
             }
             i++;

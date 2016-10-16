@@ -144,11 +144,11 @@ public class RotationalData implements Runnable {
     }
 
     public int peaks(){
-        return calc.numPeaks(this.iterator());
+        return calc.numPeaks(this.data, data.size());
     }
 
     public int timeResting(){
-        return calc.restTime(this.iterator(), this.timeInterval);
+        return calc.restTime(this.data, data.size(), this.timeInterval);
     }
 //    private float[] averageBuffer(){
 //       float[] result = new float[3];

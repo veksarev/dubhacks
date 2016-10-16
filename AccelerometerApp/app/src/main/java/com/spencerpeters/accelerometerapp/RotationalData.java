@@ -2,9 +2,6 @@ package com.spencerpeters.accelerometerapp;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import android.app.Activity;
-import android.graphics.*;
-import android.os.Bundle;
 import android.util.Log;
 
 import com.androidplot.util.PixelUtils;

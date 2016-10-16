@@ -30,10 +30,17 @@ public class DynamicXYPlotActivity extends Activity {
 
         @Override
         public void update(Observable o, Object arg) {
+            final ComputedData data = (ComputedData) arg;
             Log.d("box", "box updated");
-            ComputedData data = (ComputedData) arg;
-            view.setText("" + data.numPeaks);
-
+            runOnUiThread(
+                    new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("peaks", "" + data.numPeaks);
+                    view.setText("" + data.numPeaks);
+                }
+            }
+            );
         }
     }
     private class MyPlotUpdater implements Observer {

@@ -20,11 +20,11 @@ import java.util.*;
 
 public class RotationalData implements Runnable {
 
-    private static final int POINTS_TO_SHOW = 1000;
+    private static final int POINTS_TO_SHOW = 100; // don't make this any bigger
     private static final int TEXT_UPDATE_TIME = 100;
     private static int timeInterval;
     private static final int AXIS = 0;
-    private ArrayList<float[]> data;
+    public ArrayList<float[]> data;
     private ArrayList<float[]> buffer;
     private int countBuffered;
     private RepsCalculator calc;
@@ -67,14 +67,17 @@ public class RotationalData implements Runnable {
         return Math.min(data.size(), POINTS_TO_SHOW);
     }
 
+    public int indexToDataIndex(int index) {
+        return data.size() - 1  - Math.min(Math.abs(data.size() - 1), POINTS_TO_SHOW) + index;
+    }
+
     public Number getY(int index){
   //      Log.d("getY", "getYCalled");
-        return data.get(data.size() - 1  - Math.min(Math.abs(data.size() - 1), POINTS_TO_SHOW)
-                + index)[AXIS];
+        return data.get(indexToDataIndex(index))[AXIS];
     }
 
     public Number getX(int index){
-        return index;
+        return indexToDataIndex(index);
     }
 
 
@@ -88,8 +91,8 @@ public class RotationalData implements Runnable {
             while (keepRunning) {
                 totalTimeSlept += 10;
                 Thread.sleep(10); // decrease or remove to speed up the refresh rate.
-                notifier.notifyObservers();
 
+                notifier.notifyObservers();
                 if (totalTimeSlept % TEXT_UPDATE_TIME == 0) {
                     Log.d("sanity", "this better be called");
                     ComputedData toDisplay = computeData();

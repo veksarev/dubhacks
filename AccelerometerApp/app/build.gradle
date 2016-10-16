@@ -30,4 +30,5 @@ dependencies {
 
 dependencies {
     compile "com.androidplot:androidplot-core:1.2.2"
+
 }

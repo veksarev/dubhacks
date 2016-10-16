@@ -1,27 +1,8 @@
 package com.spencerpeters.accelerometerapp;
-
-/*
- * Copyright 2015 AndroidPlot.com
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- */
-
         import android.app.Activity;
         import android.graphics.Color;
         import android.graphics.DashPathEffect;
         import android.graphics.Paint;
-        import android.hardware.Sensor;
-        import android.hardware.SensorManager;
         import android.os.Bundle;
         import com.androidplot.Plot;
         import com.androidplot.util.PixelUtils;
@@ -58,20 +39,10 @@ public class DynamicXYPlotActivity extends Activity {
 
         // android boilerplate stuff
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sensor_data_plot);
-
-        // pasted in
-        SensorManager manager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
-        Sensor gyroscope = manager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-
-        int freq = 2000000;
-        data = new RotationalData("data", freq);
-        manager.registerListener(new RotationalSensorListener(data), gyroscope, freq);
-
-        // end pasted in
+        setContentView(R.layout.dynamic_xyplot_example);
 
         // get handles to our View defined in layout.xml:
-        dynamicPlot = (XYPlot) findViewById(R.id.plot);
+        dynamicPlot = (XYPlot) findViewById(R.id.dynamicXYPlot);
 
         plotUpdater = new MyPlotUpdater(dynamicPlot);
 
@@ -80,23 +51,16 @@ public class DynamicXYPlotActivity extends Activity {
                 setFormat(new DecimalFormat("0"));
 
         // getInstance and position datasets:
+        data = new RotationalData(200000);
+        SampleDynamicSeries sine1Series = new SampleDynamicSeries(data, "workout");
 
         LineAndPointFormatter formatter1 = new LineAndPointFormatter(
                 Color.rgb(0, 200, 0), null, null, null);
         formatter1.getLinePaint().setStrokeJoin(Paint.Join.ROUND);
         formatter1.getLinePaint().setStrokeWidth(10);
-        dynamicPlot.addSeries(data,
+        dynamicPlot.addSeries(sine1Series,
                 formatter1);
 
-        /*
-        LineAndPointFormatter formatter2 =
-                new LineAndPointFormatter(Color.rgb(0, 0, 200), null, null, null);
-        formatter2.getLinePaint().setStrokeWidth(10);
-        formatter2.getLinePaint().setStrokeJoin(Paint.Join.ROUND);
-
-        //formatter2.getFillPaint().setAlpha(220);
-        dynamicPlot.addSeries(sine2Series, formatter2);
-        */
 
         // hook up the plotUpdater to the data model:
         data.addObserver(plotUpdater);
@@ -135,107 +99,12 @@ public class DynamicXYPlotActivity extends Activity {
         super.onPause();
     }
 
-  /*  class SampleDynamicXYDatasource implements Runnable {
-
-        // encapsulates management of the observers watching this datasource for update events:
-        class MyObservable extends Observable {
-            @Override
-            public void notifyObservers() {
-                setChanged();
-                super.notifyObservers();
-            }
-        }
-
-        private static final double FREQUENCY = 5; // larger is lower frequency
-        private static final int MAX_AMP_SEED = 100;
-        private static final int MIN_AMP_SEED = 10;
-        private static final int AMP_STEP = 1;
-        public static final int SINE1 = 0;
-        public static final int SINE2 = 1;
-        private static final int SAMPLE_SIZE = 31;
-        private int phase = 0;
-        private int sinAmp = 1;
-        private MyObservable notifier;
-        private boolean keepRunning = false;
-
-        {
-            notifier = new MyObservable();
-        }
-
-        public void stopThread() {
-            keepRunning = false;
-        }
-
-        //@Override
-        public void run() {
-            try {
-                keepRunning = true;
-                boolean isRising = true;
-                while (keepRunning) {
-
-                    Thread.sleep(10); // decrease or remove to speed up the refresh rate.
-                    phase++;
-                    if (sinAmp >= MAX_AMP_SEED) {
-                        isRising = false;
-                    } else if (sinAmp <= MIN_AMP_SEED) {
-                        isRising = true;
-                    }
-
-                    if (isRising) {
-                        sinAmp += AMP_STEP;
-                    } else {
-                        sinAmp -= AMP_STEP;
-                    }
-                    notifier.notifyObservers();
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        public int getItemCount(int series) {
-            return SAMPLE_SIZE;
-        }
-
-        public Number getX(int series, int index) {
-            if (index >= SAMPLE_SIZE) {
-                throw new IllegalArgumentException();
-            }
-            return index;
-        }
-
-        public Number getY(int series, int index) {
-            if (index >= SAMPLE_SIZE) {
-                throw new IllegalArgumentException();
-            }
-            double angle = (index + (phase))/FREQUENCY;
-            double amp = sinAmp * Math.sin(angle);
-            switch (series) {
-                case SINE1:
-                    return amp;
-                case SINE2:
-                    return -amp;
-                default:
-                    throw new IllegalArgumentException();
-            }
-        }
-
-        public void addObserver(Observer observer) {
-            notifier.addObserver(observer);
-        }
-
-        public void removeObserver(Observer observer) {
-            notifier.deleteObserver(observer);
-        }
-
-    }
-*/ /*
     class SampleDynamicSeries implements XYSeries {
         private RotationalData datasource;
         private int seriesIndex;
         private String title;
 
-        public SampleDynamicSeries(RotationalData datasource, String title) {
+        public SampleDynamicSeries(RotationalData datasource,  String title) {
             this.datasource = datasource;
             this.title = title;
         }
@@ -260,5 +129,4 @@ public class DynamicXYPlotActivity extends Activity {
             return datasource.getY(index);
         }
     }
-    */
 }

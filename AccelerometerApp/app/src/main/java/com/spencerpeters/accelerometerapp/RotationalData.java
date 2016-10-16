@@ -20,28 +20,37 @@ import java.util.*;
  * Created by Vadim on 10/16/2016.
  */
 
-public class RotationalData implements XYSeries implements Ru {
+public class RotationalData implements Runnable {
 
     private static int timeInterval;
     private static final int AXIS = 1;
     private ArrayList<float[]> data;
     private ArrayList<float[]> buffer;
     private int countBuffered;
-    private String title;
     private RepsCalculator calc;
 
-    public RotationalData(String title, int interval){
+    class MyObservable extends Observable {
+        @Override
+        public void notifyObservers() {
+            setChanged();
+            super.notifyObservers();
+        }
+    }
+    private MyObservable notifier;
+    private boolean keepRunning = false;
+
+
+    public void stopThread() {
+        keepRunning = false;
+    }
+
+    public RotationalData(int interval){
         data = new ArrayList<float[]>();
         buffer = new ArrayList<float[]>();
         countBuffered = 0;
-        this.title = title;
         this.timeInterval = interval;
         calc = new RepsCalculator();
-    }
-
-    @Override
-    public String getTitle(){
-        return title;
+        notifier = new MyObservable();
     }
 
     @Override
@@ -57,6 +66,31 @@ public class RotationalData implements XYSeries implements Ru {
     @Override
     public Number getX(int index){
         return index * timeInterval;
+    }
+
+
+
+    //@Override
+    public void run() {
+        try {
+            keepRunning = true;
+            boolean isRising = true;
+            while (keepRunning) {
+
+                Thread.sleep(10); // decrease or remove to speed up the refresh rate.
+                notifier.notifyObservers();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addObserver(Observer observer) {
+        notifier.addObserver(observer);
+    }
+
+    public void removeObserver(Observer observer) {
+        notifier.deleteObserver(observer);
     }
 
     public void addData(float[] sample){

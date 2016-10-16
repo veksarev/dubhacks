@@ -1,5 +1,6 @@
 package com.spencerpeters.accelerometerapp;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -14,11 +15,12 @@ public class RepsCalculator {
     private static final float restMargin = 1.0f;
     private static final int bufferSize = 30;
 
-    public static int numPeaks(Iterator<float[]> it){
+    public static int numPeaks(ArrayList<float[]> list, int size){
         int peaks = 0;
+        int i = 0;
         float prevMinMax = 0.0f;
-        while(it.hasNext()){
-            float current = it.next()[AXIS];
+        while(i < size){
+            float current = list.get(i)[AXIS];
             if((prevMinMax > margin && current < (0.0 - margin))||(prevMinMax < (0.0 - margin) && current > margin)){
                 peaks++;
                 prevMinMax = current;
@@ -32,21 +34,23 @@ public class RepsCalculator {
                     prevMinMax = current;
                 }
             }
+            i++;
         }
         return peaks;
     }
 
 
-    public static int restTime(Iterator<float[]> it, int freq){
+    public static int restTime(ArrayList<float[]> list, int size, int freq){
         int pointsResting = 0;
         LinkedList<Float> buffer = new LinkedList<Float>();
         for(int i = 0; i < bufferSize; i++) {
             buffer.add(0.0f);
         }
-        while(it.hasNext()){
+        int i = 0;
+        while(i < size){
             boolean allZero = true;
             buffer.pop();
-            buffer.push(it.next()[AXIS]);
+            buffer.push(list.get(i)[AXIS]);
             for(float f: buffer){
                 if(!almostZero(f)){
                     allZero = false;
@@ -55,6 +59,7 @@ public class RepsCalculator {
             if(allZero){
                 pointsResting++;
             }
+            i++;
         }
         return pointsResting * freq;
     }

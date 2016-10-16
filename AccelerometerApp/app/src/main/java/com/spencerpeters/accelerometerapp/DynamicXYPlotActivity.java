@@ -1,5 +1,6 @@
 package com.spencerpeters.accelerometerapp;
         import android.app.Activity;
+        import android.content.Intent;
         import android.graphics.Color;
         import android.graphics.DashPathEffect;
         import android.graphics.Paint;
@@ -8,6 +9,8 @@ package com.spencerpeters.accelerometerapp;
         import android.os.Bundle;
         import android.os.Environment;
         import android.util.Log;
+        import android.view.View;
+        import android.widget.Button;
         import android.widget.TextView;
 
         import com.androidplot.Plot;
@@ -77,6 +80,15 @@ public class DynamicXYPlotActivity extends Activity {
         // android boilerplate stuff
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sensor_data_plot);
+
+        final Intent intent = new Intent(this, MainActivity.class);
+
+        final Button button = (Button) findViewById(R.id.stopbutton);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivity(intent);
+            }
+        });
 
         // get handles to our View defined in layout.xml:
         dynamicPlot = (XYPlot) findViewById(R.id.plot);

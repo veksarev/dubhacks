@@ -23,22 +23,28 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         intent = new Intent(this, DynamicXYPlotActivity.class);
-    }
-
-    public class StartButton extends Activity {
-        protected void onCreate(Bundle icicle) {
-            super.onCreate(icicle);
-
-            setContentView(R.layout.content_layout_id);
-
-            final Button button = (Button) findViewById(R.id.button_id);
+        final Button button = (Button) findViewById(R.id.startbutton);
             button.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     startActivity(intent);
                 }
             });
-        }
     }
+
+//    public class StartButton extends Activity {
+//        protected void onCreate(Bundle icicle) {
+//            super.onCreate(icicle);
+//
+//            setContentView(R.layout.content_layout_id);
+//
+//            final Button button = (Button) findViewById(R.id.button_id);
+//            button.setOnClickListener(new View.OnClickListener() {
+//                public void onClick(View v) {
+//                    startActivity(intent);
+//                }
+//            });
+//        }
+//    }
 
  /*   public class EndButton extends Activity {
         protected void onCreate(Bundle icicle) {

@@ -12,7 +12,7 @@ public class RepsCalculator {
     private static final int AXIS = 1;
     private static final float margin = 1.0f;
     private static final float restMargin = 1.0f;
-    private static final int bufferSize = 0;
+    private static final int bufferSize = 30;
 
     public static int numPeaks(Iterator<float[]> it){
         int peaks = 0;

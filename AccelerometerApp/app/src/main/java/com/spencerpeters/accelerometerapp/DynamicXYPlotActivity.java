@@ -7,6 +7,7 @@ package com.spencerpeters.accelerometerapp;
         import android.hardware.SensorManager;
         import android.os.Bundle;
         import android.util.Log;
+        import android.widget.TextView;
 
         import com.androidplot.Plot;
         import com.androidplot.util.PixelUtils;
@@ -20,6 +21,21 @@ package com.spencerpeters.accelerometerapp;
 public class DynamicXYPlotActivity extends Activity {
 
     // redraws a plot whenever an update is received:
+    private class MyTextBoxUpdater implements Observer {
+        TextView view;
+
+        public MyTextBoxUpdater(TextView view) {
+            this.view = view;
+        }
+
+        @Override
+        public void update(Observable o, Object arg) {
+            Log.d("box", "box updated");
+            ComputedData data = (ComputedData) arg;
+            view.setText("" + data.numPeaks);
+
+        }
+    }
     private class MyPlotUpdater implements Observer {
         Plot plot;
 
@@ -36,8 +52,10 @@ public class DynamicXYPlotActivity extends Activity {
 
     private XYPlot dynamicPlot;
     private MyPlotUpdater plotUpdater;
+    private MyTextBoxUpdater textBoxUpdater;
     RotationalData data;
     private Thread myThread;
+    private TextView textView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,8 +66,10 @@ public class DynamicXYPlotActivity extends Activity {
 
         // get handles to our View defined in layout.xml:
         dynamicPlot = (XYPlot) findViewById(R.id.plot);
+        textView = (TextView) findViewById(R.id.textBox);
 
         plotUpdater = new MyPlotUpdater(dynamicPlot);
+        textBoxUpdater = new MyTextBoxUpdater(textView);
 
         // only display whole numbers in domain labels
         dynamicPlot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).
@@ -76,6 +96,7 @@ public class DynamicXYPlotActivity extends Activity {
 
         // hook up the plotUpdater to the data model:
         data.addObserver(plotUpdater);
+        data.addComputeObserver(textBoxUpdater);
 
         // thin out domain tick labels so they dont overlap each other:
         dynamicPlot.setDomainStepMode(StepMode.INCREMENT_BY_VAL);

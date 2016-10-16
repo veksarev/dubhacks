@@ -21,6 +21,7 @@ import java.util.*;
 public class RotationalData implements Runnable {
 
     private static final int POINTS_TO_SHOW = 1000;
+    private static final int TEXT_UPDATE_TIME = 100;
     private static int timeInterval;
     private static final int AXIS = 0;
     private ArrayList<float[]> data;
@@ -34,8 +35,17 @@ public class RotationalData implements Runnable {
             setChanged();
             super.notifyObservers();
         }
+
+        @Override
+        public void notifyObservers(Object arg) {
+            Log.d("notify", "notify with arg called");
+            setChanged();
+            super.notifyObservers(arg);
+        }
     }
+
     private MyObservable notifier;
+    private MyObservable computeNotifier;
     private boolean keepRunning = false;
 
 
@@ -50,6 +60,7 @@ public class RotationalData implements Runnable {
         this.timeInterval = interval;
         calc = new RepsCalculator();
         notifier = new MyObservable();
+        computeNotifier = new MyObservable();
     }
 
     public int size(){
@@ -70,17 +81,32 @@ public class RotationalData implements Runnable {
 
     @Override
     public void run() {
+        int totalTimeSlept = 0;
         try {
             keepRunning = true;
             boolean isRising = true;
             while (keepRunning) {
-
+                totalTimeSlept += 10;
                 Thread.sleep(10); // decrease or remove to speed up the refresh rate.
                 notifier.notifyObservers();
+
+                if (totalTimeSlept % TEXT_UPDATE_TIME == 0) {
+                    Log.d("sanity", "this better be called");
+                    ComputedData toDisplay = computeData();
+                    computeNotifier.notifyObservers(toDisplay);
+                }
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    private ComputedData computeData() {
+        return new ComputedData(peaks(), timeResting(), totalTime());
+    }
+
+    public void addComputeObserver(Observer observer) {
+        computeNotifier.addObserver(observer);
     }
 
     public void addObserver(Observer observer) {
@@ -89,6 +115,10 @@ public class RotationalData implements Runnable {
 
     public void removeObserver(Observer observer) {
         notifier.deleteObserver(observer);
+    }
+
+    public int totalTime() {
+        return data.size() * timeInterval;
     }
 
     public void addData(float[] sample){

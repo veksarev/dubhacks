@@ -1,4 +1,4 @@
-package com.example.vadim.dubhacks;
+package com.spencerpeters.accelerometerapp;
 
 import org.junit.Test;
 

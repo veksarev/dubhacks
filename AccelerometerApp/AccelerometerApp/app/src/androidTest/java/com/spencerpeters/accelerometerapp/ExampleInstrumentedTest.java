@@ -1,4 +1,4 @@
-package com.example.vadim.dubhacks;
+package com.spencerpeters.accelerometerapp;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.vadim.dubhacks", appContext.getPackageName());
+        assertEquals("com.spencerpeters.accelerometerapp", appContext.getPackageName());
     }
 }

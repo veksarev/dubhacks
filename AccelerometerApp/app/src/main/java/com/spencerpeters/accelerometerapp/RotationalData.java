@@ -102,7 +102,7 @@ public class RotationalData implements Runnable {
 //            buffer.add(averageBuffer());
 //            countBuffered++;
 //        }
-        Log.d("data", Arrays.toString(sample) + " at index " + data.size());
+ //       Log.d("data", Arrays.toString(sample) + " at index " + data.size());
 //        for (int i = 0; i < data.size(); i++) {
 //            Log.d("datadump", Arrays.toString(data.get(i)) + "at index" + i);
 //        }
@@ -117,6 +117,9 @@ public class RotationalData implements Runnable {
         return calc.numPeaks(this.iterator());
     }
 
+    public int timeResting(){
+        return calc.restTime(this.iterator(), this.timeInterval);
+    }
 //    private float[] averageBuffer(){
 //       float[] result = new float[3];
 //       for(float[] ar: buffer){

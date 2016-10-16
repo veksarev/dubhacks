@@ -1,6 +1,8 @@
 package com.spencerpeters.accelerometerapp;
 
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Created by Vadim on 10/16/2016.
@@ -9,6 +11,8 @@ import java.util.Iterator;
 public class RepsCalculator {
     private static final int AXIS = 1;
     private static final float margin = 1.0f;
+    private static final float restMargin = 1.0f;
+    private static final int bufferSize = 0;
 
     public static int numPeaks(Iterator<float[]> it){
         int peaks = 0;
@@ -32,7 +36,30 @@ public class RepsCalculator {
         return peaks;
     }
 
+
+    public static int restTime(Iterator<float[]> it, int freq){
+        int pointsResting = 0;
+        LinkedList<Float> buffer = new LinkedList<Float>();
+        for(int i = 0; i < bufferSize; i++) {
+            buffer.add(0.0f);
+        }
+        while(it.hasNext()){
+            boolean allZero = true;
+            buffer.pop();
+            buffer.push(it.next()[AXIS]);
+            for(float f: buffer){
+                if(!almostZero(f)){
+                    allZero = false;
+                }
+            }
+            if(allZero){
+                pointsResting++;
+            }
+        }
+        return pointsResting * freq;
+    }
+
     private static boolean almostZero(float f){
-        return f < margin && f > (0.0f-margin);
+        return f < restMargin && f > (0.0f-restMargin);
     }
 }

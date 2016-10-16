@@ -114,13 +114,15 @@ public class DynamicXYPlotActivity extends Activity {
 
         // thin out domain tick labels so they dont overlap each other:
         dynamicPlot.setDomainStepMode(StepMode.INCREMENT_BY_VAL);
-        dynamicPlot.setDomainStepValue(5);
+        dynamicPlot.setDomainStepValue(0.25);
 
         dynamicPlot.setRangeStepMode(StepMode.INCREMENT_BY_VAL);
         dynamicPlot.setRangeStepValue(10);
 
         dynamicPlot.getGraph().getLineLabelStyle(
                 XYGraphWidget.Edge.LEFT).setFormat(new DecimalFormat("###.#"));
+
+        dynamicPlot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new DecimalFormat("###.#"));
 
         // uncomment this line to freeze the range boundaries:
         dynamicPlot.setRangeBoundaries(-3, 3, BoundaryMode.FIXED);

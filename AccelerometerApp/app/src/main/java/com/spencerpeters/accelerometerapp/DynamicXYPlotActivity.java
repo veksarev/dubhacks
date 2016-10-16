@@ -6,6 +6,7 @@ package com.spencerpeters.accelerometerapp;
         import android.hardware.Sensor;
         import android.hardware.SensorManager;
         import android.os.Bundle;
+        import android.os.Environment;
         import android.util.Log;
         import android.widget.TextView;
 
@@ -30,14 +31,20 @@ public class DynamicXYPlotActivity extends Activity {
 
         @Override
         public void update(Observable o, Object arg) {
-            final ComputedData data = (ComputedData) arg;
+            ComputedData preData = (ComputedData) arg;
+            final ComputedData data = preData.convertToStandard();
             Log.d("box", "box updated");
             runOnUiThread(
                     new Runnable() {
                 @Override
                 public void run() {
                     Log.d("peaks", "" + data.numPeaks);
-                    view.setText("" + data.numPeaks);
+                    String textToDisplay = "";
+                    textToDisplay += "Reps done: " + data.numPeaks + "\n";
+                    textToDisplay += "Resting time: " + data.restingTime + "\n";
+                    textToDisplay += "Reps per minute: " + data.getFrequency() + "\n";
+                    view.setText(textToDisplay);
+
                 }
             }
             );

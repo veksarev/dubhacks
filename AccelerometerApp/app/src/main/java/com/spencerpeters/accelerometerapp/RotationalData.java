@@ -77,9 +77,14 @@ public class RotationalData implements Runnable {
     }
 
     public Number getX(int index){
-        return indexToDataIndex(index);
+        double xVal = indexToDataIndex(index) / SamplesPerSecond();
+        Log.d("xval", "" + xVal);
+        return xVal;
     }
 
+    private double SamplesPerSecond() {
+        return (double) ComputedData.MICROSECONDS_PER_SECOND / timeInterval;
+    }
 
 
     @Override

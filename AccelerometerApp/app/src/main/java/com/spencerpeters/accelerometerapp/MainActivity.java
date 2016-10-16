@@ -1,6 +1,7 @@
 package com.spencerpeters.accelerometerapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.hardware.*;
@@ -16,12 +17,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        SensorManager manager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
-        Sensor gyroscope = manager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        //Sensor rotation = manager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
-        //Sensor orientation = manager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
-        manager.registerListener(this, gyroscope, 2000000);
-        Log.d("tag", "what up");
+//        SensorManager manager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
+//        Sensor gyroscope = manager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+//        //Sensor rotation = manager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+//        //Sensor orientation = manager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+//        manager.registerListener(this, gyroscope, 2000000);
+//        Log.d("tag", "what up");
+
+        Intent intent = new Intent(this, SimpleXYPlotActivity.class);
+        startActivity(intent);
     }
 
     @Override

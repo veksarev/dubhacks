@@ -21,7 +21,7 @@ public class RepsCalculator {
         }
         return peaks;
     }
-    
+
     private static boolean almostZero(float f){
         return f < margin && f > (0.0f-margin);
     }

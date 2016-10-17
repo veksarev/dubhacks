@@ -27,7 +27,7 @@ public class DynamicXYPlotActivity extends Activity {
     // redraws a plot whenever an update is received:
     private class MyTextBoxUpdater implements Observer {
         TextView view;
-
+        private DecimalFormat format = new DecimalFormat("#.##");
         public MyTextBoxUpdater(TextView view) {
             this.view = view;
         }
@@ -45,7 +45,7 @@ public class DynamicXYPlotActivity extends Activity {
                     String textToDisplay = "";
                     textToDisplay += "Reps done: " + data.numPeaks + "\n";
                     textToDisplay += "Resting time: " + data.restingTime + "\n";
-                    textToDisplay += "Reps per minute: " + data.getFrequency() + "\n";
+                    textToDisplay += "Reps per minute: " + format.format(data.getFrequency()) + "\n";
                     view.setText(textToDisplay);
 
                 }
